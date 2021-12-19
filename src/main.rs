@@ -9,6 +9,8 @@ use serenity::model::channel::Message;
 use dotenv::dotenv;
 use std::env;
 
+use chrono::Utc;
+
 #[group]
 #[commands(ping)]
 struct General;
@@ -43,7 +45,7 @@ async fn main() {
 async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
     let content = format!(
         "The bots ping is: {}ms",
-        chrono::Utc::now().timestamp_millis() - msg.timestamp.timestamp_millis()
+        Utc::now().timestamp_millis() - msg.timestamp.timestamp_millis()
     );
     msg.reply(ctx, content).await?;
 
