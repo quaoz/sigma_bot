@@ -2,24 +2,36 @@ pub mod commands;
 
 use crate::{commands::*};
 use serenity::{
-	client::bridge::gateway::ShardManager,
-	framework::standard::{
-		macros::{hook},
+	async_trait,
+	client::{bridge::gateway::ShardManager, Client, Context, EventHandler},
+	framework::{
+		standard::{
+			macros::{hook},
+			CommandResult,
+		},
 		StandardFramework
 	},
-	model::{channel::Message, event::ResumedEvent, gateway::Ready},
 	http::Http,
 	prelude::*,
-	async_trait,
+	model::{channel::Message, event::ResumedEvent, gateway::Ready},
+	Result as SerenityResult,
 };
 use std::{
 	collections::HashSet,
+	sync::Arc,
 	env,
-	sync::Arc
 };
+
+use lavalink_rs::{gateway::*, model::*, LavalinkClient};
+use songbird::SerenityInit;
 
 use tracing::{debug, error, info, instrument};
 
+struct Lavalink;
+
+impl TypeMapKey for Lavalink {
+	type Value = LavalinkClient;
+}
 
 pub struct ShardManagerContainer;
 
@@ -28,6 +40,7 @@ impl TypeMapKey for ShardManagerContainer {
 }
 
 struct Handler;
+struct LavalinkHandler;
 
 #[async_trait]
 impl EventHandler for Handler {
@@ -41,6 +54,16 @@ impl EventHandler for Handler {
 	}
 }
 
+#[async_trait]
+impl LavalinkEventHandler for LavalinkHandler {
+	async fn track_start(&self, _client: LavalinkClient, event: TrackStart) {
+		info!("Track started!\nGuild: {}", event.guild_id);
+	}
+	async fn track_finish(&self, _client: LavalinkClient, event: TrackFinish) {
+		info!("Track finished!\nGuild: {}", event.guild_id);
+	}
+}
+
 #[hook]
 #[instrument]
 async fn before(_: &Context, msg: &Message, command_name: &str) -> bool {
@@ -48,11 +71,25 @@ async fn before(_: &Context, msg: &Message, command_name: &str) -> bool {
 	true
 }
 
+#[hook]
+#[instrument]
+async fn after(_ctx: &Context, _msg: &Message, command_name: &str, command_result: CommandResult) {
+	match command_result {
+		Err(why) => info!(
+            "Command '{}' returned error {:?} => {}",
+            command_name, why, why
+        ),
+		_ => (),
+	}
+}
+
 #[tokio::main]
 #[instrument]
-async fn main() {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
 	// Load the environmental variables
 	dotenv::dotenv().expect("Failed to load .env file");
+
+	env::set_var("RUST_LOG", "info,lavalink_rs=debug");
 
 	// Initialize the logger to use environment variables
 	tracing_subscriber::fmt::init();
@@ -62,7 +99,7 @@ async fn main() {
 	let http = Http::new_with_token(&token);
 
 	// Fetch your bots owners and id
-	let (owners, _bot_id) = match http.get_current_application_info().await {
+	let (owners, bot_id) = match http.get_current_application_info().await {
 		Ok(info) => {
 			let mut owners = HashSet::new();
 			owners.insert(info.owner.id);
@@ -76,20 +113,32 @@ async fn main() {
 	let framework = StandardFramework::new()
 			.configure(|c| c.owners(owners).on_mention(Some(bot_id)).prefix("~"))
 			.before(before)
+			.after(after)
 			.group(&ADMIN_GROUP)
 			.group(&INFO_GROUP)
 			.group(&MATHS_GROUP)
-			.group(&WORDS_GROUP);
+			.group(&WORDS_GROUP)
+			.group(&VOICE_GROUP);
 
 	let mut client = Client::builder(&token)
 			.framework(framework)
 			.event_handler(Handler)
+			.register_songbird()
 			.await
 			.expect("Err creating client");
+
+	let lava_client = LavalinkClient::builder(bot_id)
+			.set_host("127.0.0.1")
+			.set_password(
+				env::var("LAVALINK_PASSWORD").unwrap_or_else(|_| "youshallnotpass".to_string()),
+			)
+			.build(LavalinkHandler)
+			.await?;
 
 	{
 		let mut data = client.data.write().await;
 		data.insert::<ShardManagerContainer>(client.shard_manager.clone());
+		data.insert::<Lavalink>(lava_client);
 	}
 
 	let shard_manager = client.shard_manager.clone();
@@ -101,5 +150,13 @@ async fn main() {
 
 	if let Err(why) = client.start_autosharded().await {
 		error!("Client error: {:?}", why);
+	}
+
+	Ok(())
+}
+
+pub fn check_msg(result: SerenityResult<Message>) {
+	if let Err(why) = result {
+		error!("Error sending message: {:?}", why);
 	}
 }

@@ -12,3 +12,6 @@ pub use divide::*;
 
 pub mod multiply;
 pub use multiply::*;
+
+pub mod power;
+pub use power::*;
