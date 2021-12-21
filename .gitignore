@@ -1,6 +1,5 @@
 /target
 /.idea
-/Cargo.lock
 /discord_bot.iml
 /.env
 /logs/
