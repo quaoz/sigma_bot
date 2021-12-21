@@ -1,17 +1,25 @@
-mod commands;
+pub mod commands;
 
-use std::{collections::HashSet, env, sync::Arc};
-
-use commands::{maths::*, util::*, owners::*, words::*};
+use crate::{commands::*};
 use serenity::{
-	async_trait,
 	client::bridge::gateway::ShardManager,
-	framework::{standard::macros::group, StandardFramework},
+	framework::standard::{
+		macros::{hook},
+		StandardFramework
+	},
+	model::{channel::Message, event::ResumedEvent, gateway::Ready},
 	http::Http,
-	model::{event::ResumedEvent, gateway::Ready},
 	prelude::*,
+	async_trait,
 };
-use tracing::{error, info};
+use std::{
+	collections::HashSet,
+	env,
+	sync::Arc
+};
+
+use tracing::{debug, error, info, instrument};
+
 
 pub struct ShardManagerContainer;
 
@@ -27,16 +35,21 @@ impl EventHandler for Handler {
 		info!("Connected as {}", ready.user.name);
 	}
 
-	async fn resume(&self, _: Context, _: ResumedEvent) {
-		info!("Resumed");
+	#[instrument(skip(self, _ctx))]
+	async fn resume(&self, _ctx: Context, resume: ResumedEvent) {
+		debug!("Resumed; trace: {:?}", resume.trace);
 	}
 }
 
-#[group]
-#[commands(multiply, divide, add, subtract, random, ping, quit, define)]
-struct General;
+#[hook]
+#[instrument]
+async fn before(_: &Context, msg: &Message, command_name: &str) -> bool {
+	info!("Got command '{}' by user '{}'", command_name, msg.author.name);
+	true
+}
 
 #[tokio::main]
+#[instrument]
 async fn main() {
 	// Load the environmental variables
 	dotenv::dotenv().expect("Failed to load .env file");
@@ -60,8 +73,13 @@ async fn main() {
 	};
 
 	// Create the framework
-	let framework =
-			StandardFramework::new().configure(|c| c.owners(owners).prefix("~")).group(&GENERAL_GROUP);
+	let framework = StandardFramework::new()
+			.configure(|c| c.owners(owners).on_mention(Some(bot_id)).prefix("~"))
+			.before(before)
+			.group(&ADMIN_GROUP)
+			.group(&INFO_GROUP)
+			.group(&MATHS_GROUP)
+			.group(&WORDS_GROUP);
 
 	let mut client = Client::builder(&token)
 			.framework(framework)
@@ -81,7 +99,7 @@ async fn main() {
 		shard_manager.lock().await.shutdown_all().await;
 	});
 
-	if let Err(why) = client.start().await {
+	if let Err(why) = client.start_autosharded().await {
 		error!("Client error: {:?}", why);
 	}
 }
