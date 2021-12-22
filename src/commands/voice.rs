@@ -12,3 +12,15 @@ pub use now_playing::*;
 
 pub mod skip;
 pub use skip::*;
+
+pub mod pause;
+pub use pause::*;
+
+pub mod resume;
+pub use resume::*;
+
+pub mod stop;
+pub use stop::*;
+
+pub mod volume;
+pub use volume::*;

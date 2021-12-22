@@ -15,7 +15,6 @@ async fn join(ctx: &Context, msg: &Message) -> CommandResult {
 	let guild = msg.guild(&ctx.cache).await.unwrap();
 	let guild_id = guild.id;
 
-	// Get the authors voice channel
 	let channel_id = guild
 		.voice_states
 		.get(&msg.author.id)
@@ -30,7 +29,6 @@ async fn join(ctx: &Context, msg: &Message) -> CommandResult {
 		}
 	};
 
-	// Join the channel
 	let manager = songbird::get(ctx).await.unwrap().clone();
 	let (_, handler) = manager.join_gateway(guild_id, connect_to).await;
 

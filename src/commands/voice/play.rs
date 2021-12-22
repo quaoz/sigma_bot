@@ -55,11 +55,7 @@ async fn play(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 		)
 		.await?;
 	} else {
-		msg.reply(
-			&ctx.http,
-			"Use `~join` first",
-		)
-		.await?;
+		msg.reply(&ctx.http, "Use `~join` first").await?;
 	}
 
 	Ok(())
