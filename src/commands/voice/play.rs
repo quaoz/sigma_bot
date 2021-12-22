@@ -17,7 +17,7 @@ async fn play(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 	let guild_id = match ctx.cache.guild_channel(msg.channel_id).await {
 		Some(channel) => channel.guild_id,
 		None => {
-			msg.channel_id.say(&ctx.http, "Error finding channel info").await;
+			msg.channel_id.say(&ctx.http, "Error finding channel info").await?;
 
 			return Ok(());
 		}
@@ -34,9 +34,7 @@ async fn play(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 		let query_information = lava_client.auto_search_tracks(&query).await?;
 
 		if query_information.tracks.is_empty() {
-			msg.channel_id
-				.say(&ctx, "Could not find any video of the search query.")
-				.await;
+			msg.reply(&ctx, "Could not find any video of the search query.").await?;
 			return Ok(());
 		}
 
@@ -48,22 +46,20 @@ async fn play(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 			error!("{}", why);
 			return Ok(());
 		};
-		msg.channel_id
-			.say(
-				&ctx.http,
-				format!(
-					"Added to queue: {}",
-					query_information.tracks[0].info.as_ref().unwrap().title
-				),
-			)
-			.await
+		msg.reply(
+			&ctx.http,
+			format!(
+				"Added to queue: {}",
+				query_information.tracks[0].info.as_ref().unwrap().title
+			),
+		)
+		.await?;
 	} else {
-		msg.channel_id
-			.say(
-				&ctx.http,
-				"Use `~join` first, to connect the bot to your current voice channel.",
-			)
-			.await
+		msg.reply(
+			&ctx.http,
+			"Use `~join` first, to connect the bot to your current voice channel.",
+		)
+		.await?;
 	}
 
 	Ok(())

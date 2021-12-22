@@ -17,17 +17,16 @@ async fn now_playing(ctx: &Context, msg: &Message) -> CommandResult {
 
 	if let Some(node) = lava_client.nodes().await.get(&msg.guild_id.unwrap().0) {
 		if let Some(track) = &node.now_playing {
-			msg.channel_id
-				.say(
-					&ctx.http,
-					format!("Now Playing: {}", track.track.info.as_ref().unwrap().title),
-				)
-				.await
+			msg.reply(
+				&ctx.http,
+				format!("Now Playing: {}", track.track.info.as_ref().unwrap().title),
+			)
+			.await?;
 		} else {
-			check_msg(msg.channel_id.say(&ctx.http, "Nothing is playing at the moment.").await);
+			msg.reply(&ctx.http, "Nothing is playing at the moment.").await?;
 		}
 	} else {
-		msg.channel_id.say(&ctx.http, "Nothing is playing at the moment.").await;
+		msg.reply(&ctx.http, "Nothing is playing at the moment.").await?;
 	}
 
 	Ok(())

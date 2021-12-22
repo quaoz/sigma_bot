@@ -11,7 +11,6 @@ use serenity::{
 	http::Http,
 	model::{channel::Message, event::ResumedEvent, gateway::Ready},
 	prelude::*,
-	Result as SerenityResult,
 };
 use std::{collections::HashSet, env, sync::Arc};
 

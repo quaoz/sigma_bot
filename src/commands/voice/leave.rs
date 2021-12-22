@@ -8,7 +8,7 @@ use serenity::{
 #[command]
 #[num_args(0)]
 #[aliases(exit)]
-#[descrption("Leaves the voice channel")]
+#[description("Leaves the voice channel")]
 #[usage("join")]
 #[example("join")]
 async fn leave(ctx: &Context, msg: &Message) -> CommandResult {
@@ -20,7 +20,9 @@ async fn leave(ctx: &Context, msg: &Message) -> CommandResult {
 
 	if has_handler {
 		if let Err(e) = manager.remove(guild_id).await {
-			msg.channel_id.say(&ctx.http, format!("Failed: {:?}", e)).await;
+			msg.channel_id
+				.say(&ctx.http, format!("Failed to leave: {:?}", e))
+				.await?;
 		}
 
 		{
@@ -29,9 +31,9 @@ async fn leave(ctx: &Context, msg: &Message) -> CommandResult {
 			lava_client.destroy(guild_id).await?;
 		}
 
-		msg.channel_id.say(&ctx.http, "Left the voice channel").await;
+		msg.reply(&ctx.http, "Left the voice channel").await?;
 	} else {
-		msg.reply(&ctx.http, "Not in a voice channel").await;
+		msg.reply(&ctx.http, "Not in a voice channel").await?;
 	}
 
 	Ok(())
