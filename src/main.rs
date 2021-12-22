@@ -66,9 +66,8 @@ async fn before(_: &Context, msg: &Message, command_name: &str) -> bool {
 #[hook]
 #[instrument]
 async fn after(_ctx: &Context, _msg: &Message, command_name: &str, command_result: CommandResult) {
-	match command_result {
-		Err(why) => info!("Command '{}' returned error {:?} => {}", command_name, why, why),
-		_ => (),
+	if let Err(why) = command_result {
+		info!("Command '{}' returned error {:?} => {}", command_name, why, why)
 	}
 }
 

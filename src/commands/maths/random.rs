@@ -1,7 +1,7 @@
 use serenity::framework::standard::{macros::command, Args, CommandResult};
 use serenity::model::prelude::*;
 use serenity::prelude::*;
-use std::ops::Add;
+use std::{ops::Add, mem::swap};
 
 use rand::Rng;
 
@@ -22,9 +22,7 @@ pub async fn random(ctx: &Context, msg: &Message, mut args: Args) -> CommandResu
 	let mut max = args.single::<f64>()?;
 
 	if min > max {
-		let tmp = min;
-		min = max;
-		max = tmp;
+		swap(&mut min, &mut max);
 	}
 
 	let product = rand::thread_rng().gen_range(min..max.add(1f64)).floor();
