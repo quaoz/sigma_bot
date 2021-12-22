@@ -1,26 +1,19 @@
 pub mod commands;
 
-use crate::{commands::*};
+use crate::commands::*;
 use serenity::{
 	async_trait,
 	client::{bridge::gateway::ShardManager, Client, Context, EventHandler},
 	framework::{
-		standard::{
-			macros::{hook},
-			CommandResult,
-		},
-		StandardFramework
+		standard::{macros::hook, CommandResult},
+		StandardFramework,
 	},
 	http::Http,
-	prelude::*,
 	model::{channel::Message, event::ResumedEvent, gateway::Ready},
+	prelude::*,
 	Result as SerenityResult,
 };
-use std::{
-	collections::HashSet,
-	sync::Arc,
-	env,
-};
+use std::{collections::HashSet, env, sync::Arc};
 
 use lavalink_rs::{gateway::*, model::*, LavalinkClient};
 use songbird::SerenityInit;
@@ -75,10 +68,7 @@ async fn before(_: &Context, msg: &Message, command_name: &str) -> bool {
 #[instrument]
 async fn after(_ctx: &Context, _msg: &Message, command_name: &str, command_result: CommandResult) {
 	match command_result {
-		Err(why) => info!(
-            "Command '{}' returned error {:?} => {}",
-            command_name, why, why
-        ),
+		Err(why) => info!("Command '{}' returned error {:?} => {}", command_name, why, why),
 		_ => (),
 	}
 }
@@ -105,35 +95,33 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 			owners.insert(info.owner.id);
 
 			(owners, info.id)
-		},
+		}
 		Err(why) => panic!("Could not access application info: {:?}", why),
 	};
 
 	// Create the framework
 	let framework = StandardFramework::new()
-			.configure(|c| c.owners(owners).on_mention(Some(bot_id)).prefix("~"))
-			.before(before)
-			.after(after)
-			.group(&ADMIN_GROUP)
-			.group(&INFO_GROUP)
-			.group(&MATHS_GROUP)
-			.group(&WORDS_GROUP)
-			.group(&VOICE_GROUP);
+		.configure(|c| c.owners(owners).on_mention(Some(bot_id)).prefix("~"))
+		.before(before)
+		.after(after)
+		.group(&ADMIN_GROUP)
+		.group(&INFO_GROUP)
+		.group(&MATHS_GROUP)
+		.group(&WORDS_GROUP)
+		.group(&VOICE_GROUP);
 
 	let mut client = Client::builder(&token)
-			.framework(framework)
-			.event_handler(Handler)
-			.register_songbird()
-			.await
-			.expect("Err creating client");
+		.framework(framework)
+		.event_handler(Handler)
+		.register_songbird()
+		.await
+		.expect("Err creating client");
 
 	let lava_client = LavalinkClient::builder(bot_id)
-			.set_host("127.0.0.1")
-			.set_password(
-				env::var("LAVALINK_PASSWORD").unwrap_or_else(|_| "youshallnotpass".to_string()),
-			)
-			.build(LavalinkHandler)
-			.await?;
+		.set_host("127.0.0.1")
+		.set_password(env::var("LAVALINK_PASSWORD").unwrap_or_else(|_| "youshallnotpass".to_string()))
+		.build(LavalinkHandler)
+		.await?;
 
 	{
 		let mut data = client.data.write().await;
@@ -144,7 +132,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 	let shard_manager = client.shard_manager.clone();
 
 	tokio::spawn(async move {
-		tokio::signal::ctrl_c().await.expect("Could not register ctrl+c handler");
+		tokio::signal::ctrl_c()
+			.await
+			.expect("Could not register ctrl+c handler");
 		shard_manager.lock().await.shutdown_all().await;
 	});
 

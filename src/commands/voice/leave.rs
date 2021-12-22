@@ -1,14 +1,9 @@
-use serenity::{
-	client::{Context},
-	framework::{
-		standard::{
-			macros::{command},
-			CommandResult,
-		},
-	},
-	model::{channel::Message},
-};
 use crate::{check_msg, Lavalink};
+use serenity::{
+	client::Context,
+	framework::standard::{macros::command, CommandResult},
+	model::channel::Message,
+};
 
 #[command]
 async fn leave(ctx: &Context, msg: &Message) -> CommandResult {
@@ -20,11 +15,7 @@ async fn leave(ctx: &Context, msg: &Message) -> CommandResult {
 
 	if has_handler {
 		if let Err(e) = manager.remove(guild_id).await {
-			check_msg(
-				msg.channel_id
-						.say(&ctx.http, format!("Failed: {:?}", e))
-						.await,
-			);
+			check_msg(msg.channel_id.say(&ctx.http, format!("Failed: {:?}", e)).await);
 		}
 
 		{

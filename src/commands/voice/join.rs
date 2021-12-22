@@ -1,14 +1,9 @@
+use crate::{check_msg, Lavalink};
 use serenity::{
-	client::{Context},
-	framework::{
-		standard::{
-			macros::{command},
-			CommandResult,
-		},
-	},
+	client::Context,
+	framework::standard::{macros::command, CommandResult},
 	model::{channel::Message, misc::Mentionable},
 };
-use crate::{check_msg, Lavalink};
 
 #[command]
 async fn join(ctx: &Context, msg: &Message) -> CommandResult {
@@ -16,9 +11,9 @@ async fn join(ctx: &Context, msg: &Message) -> CommandResult {
 	let guild_id = guild.id;
 
 	let channel_id = guild
-			.voice_states
-			.get(&msg.author.id)
-			.and_then(|voice_state| voice_state.channel_id);
+		.voice_states
+		.get(&msg.author.id)
+		.and_then(|voice_state| voice_state.channel_id);
 
 	let connect_to = match channel_id {
 		Some(channel) => channel,
@@ -40,14 +35,14 @@ async fn join(ctx: &Context, msg: &Message) -> CommandResult {
 
 			check_msg(
 				msg.channel_id
-						.say(&ctx.http, &format!("Joined {}", connect_to.mention()))
-						.await,
+					.say(&ctx.http, &format!("Joined {}", connect_to.mention()))
+					.await,
 			);
 		}
 		Err(why) => check_msg(
 			msg.channel_id
-					.say(&ctx.http, format!("Error joining the channel: {}", why))
-					.await,
+				.say(&ctx.http, format!("Error joining the channel: {}", why))
+				.await,
 		),
 	}
 

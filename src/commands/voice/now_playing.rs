@@ -1,14 +1,9 @@
-use serenity::{
-	client::{Context},
-	framework::{
-		standard::{
-			macros::{command},
-			CommandResult,
-		},
-	},
-	model::{channel::Message},
-};
 use crate::{check_msg, Lavalink};
+use serenity::{
+	client::Context,
+	framework::standard::{macros::command, CommandResult},
+	model::channel::Message,
+};
 
 #[command]
 #[aliases(np)]
@@ -20,25 +15,17 @@ async fn now_playing(ctx: &Context, msg: &Message) -> CommandResult {
 		if let Some(track) = &node.now_playing {
 			check_msg(
 				msg.channel_id
-						.say(
-							&ctx.http,
-							format!("Now Playing: {}", track.track.info.as_ref().unwrap().title),
-						)
-						.await,
+					.say(
+						&ctx.http,
+						format!("Now Playing: {}", track.track.info.as_ref().unwrap().title),
+					)
+					.await,
 			);
 		} else {
-			check_msg(
-				msg.channel_id
-						.say(&ctx.http, "Nothing is playing at the moment.")
-						.await,
-			);
+			check_msg(msg.channel_id.say(&ctx.http, "Nothing is playing at the moment.").await);
 		}
 	} else {
-		check_msg(
-			msg.channel_id
-					.say(&ctx.http, "Nothing is playing at the moment.")
-					.await,
-		);
+		check_msg(msg.channel_id.say(&ctx.http, "Nothing is playing at the moment.").await);
 	}
 
 	Ok(())

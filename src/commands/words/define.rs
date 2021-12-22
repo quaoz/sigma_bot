@@ -22,13 +22,8 @@ async fn define(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 
 	let entries = json.as_array().unwrap();
 	// Get the first entry
-	let mut defs: Vec<&Vec<serde_json::Value>> = vec![json
-			.get(0)
-			.unwrap()
-			.get("shortdef")
-			.unwrap()
-			.as_array()
-			.unwrap()];
+	let mut defs: Vec<&Vec<serde_json::Value>> =
+		vec![json.get(0).unwrap().get("shortdef").unwrap().as_array().unwrap()];
 
 	// Get the remaining entries
 	for i in 1..entries.len() {
@@ -37,25 +32,16 @@ async fn define(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 
 		// Check that the entry is not a similar term
 		if entries
-				.get(i)
-				.unwrap()
-				.get("meta")
-				.unwrap()
-				.get("id")
-				.unwrap()
-				.as_str()
-				.unwrap()
-				== pattern
+			.get(i)
+			.unwrap()
+			.get("meta")
+			.unwrap()
+			.get("id")
+			.unwrap()
+			.as_str()
+			.unwrap() == pattern
 		{
-			defs.push(
-				entries
-						.get(i)
-						.unwrap()
-						.get("shortdef")
-						.unwrap()
-						.as_array()
-						.unwrap(),
-			);
+			defs.push(entries.get(i).unwrap().get("shortdef").unwrap().as_array().unwrap());
 		} else {
 			break;
 		}
@@ -84,19 +70,15 @@ async fn define(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 
 		// Get the word type
 		let word_type = entries
-				.get(entry_number - 1)
-				.unwrap()
-				.get("fl")
-				.unwrap()
-				.as_str()
-				.unwrap();
+			.get(entry_number - 1)
+			.unwrap()
+			.get("fl")
+			.unwrap()
+			.as_str()
+			.unwrap();
 
 		// Add the field to the embed
-		embed.field(
-			&*format!("\nEntry {} ({}):\n", entry_number, &word_type),
-			field,
-			true,
-		);
+		embed.field(&*format!("\nEntry {} ({}):\n", entry_number, &word_type), field, true);
 		entry_number += 1;
 	}
 
@@ -105,20 +87,20 @@ async fn define(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 	auth.name(&msg.author.name);
 	auth.url(
 		&msg.author
-				.avatar_url()
-				.unwrap_or(String::from(&msg.author.default_avatar_url())),
+			.avatar_url()
+			.unwrap_or(String::from(&msg.author.default_avatar_url())),
 	);
 
 	// Send the message
 	msg.channel_id
-			.send_message(&ctx, |f| {
-				f.content("").embed(|e| {
-					e.0 = embed.0;
-					e
-				})
+		.send_message(&ctx, |f| {
+			f.content("").embed(|e| {
+				e.0 = embed.0;
+				e
 			})
-			.await
-			.unwrap();
+		})
+		.await
+		.unwrap();
 
 	Ok(())
 }
