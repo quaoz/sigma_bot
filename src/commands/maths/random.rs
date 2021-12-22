@@ -1,7 +1,7 @@
 use serenity::framework::standard::{macros::command, Args, CommandResult};
 use serenity::model::prelude::*;
 use serenity::prelude::*;
-use std::{ops::Add, mem::swap};
+use std::{mem::swap, ops::Add};
 
 use rand::Rng;
 
