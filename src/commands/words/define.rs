@@ -85,15 +85,6 @@ async fn define(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 		entry_number += 1;
 	}
 
-	// Add the author
-	let mut auth = CreateEmbedAuthor::default();
-	auth.name(&msg.author.name);
-	auth.url(
-		&msg.author
-			.avatar_url()
-			.unwrap_or_else(|| String::from(&msg.author.default_avatar_url())),
-	);
-
 	// Send the message
 	msg.channel_id
 		.send_message(&ctx, |f| {

@@ -29,5 +29,5 @@ pub mod voice;
 pub use voice::*;
 #[group]
 #[only_in(guilds)]
-#[commands(join, leave, play, now_playing, skip, pause, resume, stop, volume)]
+#[commands(join, leave, play, now_playing, skip, pause, resume, volume, queue)]
 struct Voice;

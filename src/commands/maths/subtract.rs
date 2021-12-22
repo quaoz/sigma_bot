@@ -9,11 +9,12 @@ use serenity::prelude::*;
 #[usage("subtract <numbers>")]
 #[example("subtract 54 3 92")]
 pub async fn subtract(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-	let mut product = 1f64;
+	let mut product = args.single::<f64>()?;
 
-	for arg in args.iter::<f64>() {
-		product -= arg.unwrap();
+	for _ in 1..args.len() {
+		product -= args.single::<f64>()?;
 	}
+
 
 	msg.reply(&ctx.http, product).await?;
 	Ok(())

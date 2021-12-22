@@ -1,3 +1,5 @@
+#![feature(int_roundings)]
+
 pub mod commands;
 
 use crate::commands::*;

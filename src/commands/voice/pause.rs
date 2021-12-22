@@ -15,7 +15,7 @@ async fn pause(ctx: &Context, msg: &Message) -> CommandResult {
 	let lava_client = data.get::<Lavalink>().unwrap().clone();
 
 	if let Err(_why) = lava_client.pause(msg.guild_id.unwrap()).await {
-		msg.reply(&ctx.http, "Nothing to pause.").await?;
+		msg.reply(&ctx.http, "Failed to pause.").await?;
 	} else {
 		msg.reply(&ctx.http, "Paused").await?;
 	}

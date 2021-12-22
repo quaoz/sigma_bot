@@ -15,7 +15,7 @@ async fn resume(ctx: &Context, msg: &Message) -> CommandResult {
 	let lava_client = data.get::<Lavalink>().unwrap().clone();
 
 	if let Err(_why) = lava_client.resume(msg.guild_id.unwrap()).await {
-		msg.reply(&ctx.http, "Nothing to resume.").await?;
+		msg.reply(&ctx.http, "Failed to resume.").await?;
 	} else {
 		msg.reply(&ctx.http, "Resumed").await?;
 	}

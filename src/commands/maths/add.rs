@@ -9,7 +9,7 @@ use serenity::prelude::*;
 #[usage("add <numbers>")]
 #[example("add 72 14 349")]
 pub async fn add(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-	let mut product = 1f64;
+	let mut product = 0f64;
 
 	for arg in args.iter::<f64>() {
 		product += arg.unwrap();

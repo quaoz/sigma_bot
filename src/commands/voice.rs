@@ -19,8 +19,8 @@ pub use pause::*;
 pub mod resume;
 pub use resume::*;
 
-pub mod stop;
-pub use stop::*;
-
 pub mod volume;
 pub use volume::*;
+
+pub mod queue;
+pub use queue::*;
