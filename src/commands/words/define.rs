@@ -64,7 +64,7 @@ async fn define(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 		for item in def {
 			// Capitalise the first letter of each item
 			let mut v: Vec<char> = item.as_str().unwrap().chars().collect();
-			v[0] = v[0].to_uppercase().nth(0).unwrap();
+			v[0] = v[0].to_uppercase().next().unwrap();
 			let capitalised: String = v.into_iter().collect();
 
 			field.push_str(&*format!("{}. {}\n\n", index, capitalised));
@@ -91,7 +91,7 @@ async fn define(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 	auth.url(
 		&msg.author
 			.avatar_url()
-			.unwrap_or(String::from(&msg.author.default_avatar_url())),
+			.unwrap_or_else(|| String::from(&msg.author.default_avatar_url())),
 	);
 
 	// Send the message
