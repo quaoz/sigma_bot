@@ -7,7 +7,6 @@ use crate::ShardManagerContainer;
 #[command]
 #[num_args(0)]
 #[aliases(kill)]
-#[owners_only(true)]
 #[description("Quits the bot")]
 #[usage("quit")]
 #[example("quit")]

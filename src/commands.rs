@@ -3,6 +3,7 @@ use serenity::framework::standard::macros::group;
 pub mod admin;
 pub use admin::*;
 #[group]
+#[owners_only(true)]
 #[commands(quit)]
 struct Admin;
 

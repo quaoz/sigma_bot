@@ -57,7 +57,7 @@ async fn play(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 	} else {
 		msg.reply(
 			&ctx.http,
-			"Use `~join` first, to connect the bot to your current voice channel.",
+			"Use `~join` first",
 		)
 		.await?;
 	}
