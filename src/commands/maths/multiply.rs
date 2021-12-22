@@ -3,8 +3,11 @@ use serenity::model::prelude::*;
 use serenity::prelude::*;
 
 #[command]
-#[aliases(times, x, "*")]
+#[min_args(1)]
+#[aliases(times, "*")]
 #[description = "Multiplies several numbers"]
+#[usage("multiply <numbers>")]
+#[example("multiply 236 41 101")]
 pub async fn multiply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 	let mut product = 1f64;
 

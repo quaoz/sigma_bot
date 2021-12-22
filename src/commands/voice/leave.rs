@@ -1,4 +1,4 @@
-use crate::{check_msg, Lavalink};
+use crate::Lavalink;
 use serenity::{
 	client::Context,
 	framework::standard::{macros::command, CommandResult},
@@ -6,6 +6,11 @@ use serenity::{
 };
 
 #[command]
+#[num_args(0)]
+#[aliases(exit)]
+#[descrption("Leaves the voice channel")]
+#[usage("join")]
+#[example("join")]
 async fn leave(ctx: &Context, msg: &Message) -> CommandResult {
 	let guild = msg.guild(&ctx.cache).await.unwrap();
 	let guild_id = guild.id;
@@ -15,7 +20,7 @@ async fn leave(ctx: &Context, msg: &Message) -> CommandResult {
 
 	if has_handler {
 		if let Err(e) = manager.remove(guild_id).await {
-			check_msg(msg.channel_id.say(&ctx.http, format!("Failed: {:?}", e)).await);
+			msg.channel_id.say(&ctx.http, format!("Failed: {:?}", e)).await;
 		}
 
 		{
@@ -24,9 +29,9 @@ async fn leave(ctx: &Context, msg: &Message) -> CommandResult {
 			lava_client.destroy(guild_id).await?;
 		}
 
-		check_msg(msg.channel_id.say(&ctx.http, "Left voice channel").await);
+		msg.channel_id.say(&ctx.http, "Left the voice channel").await;
 	} else {
-		check_msg(msg.reply(&ctx.http, "Not in a voice channel").await);
+		msg.reply(&ctx.http, "Not in a voice channel").await;
 	}
 
 	Ok(())

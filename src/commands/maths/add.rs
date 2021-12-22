@@ -3,8 +3,11 @@ use serenity::model::prelude::*;
 use serenity::prelude::*;
 
 #[command]
+#[min_args(1)]
 #[aliases(plus, "+")]
-#[description = "Adds several numbers"]
+#[description("Adds several numbers")]
+#[usage("add <numbers>")]
+#[example("add 72 14 349")]
 pub async fn add(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 	let mut product = 1f64;
 

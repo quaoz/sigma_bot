@@ -5,8 +5,11 @@ use serenity::prelude::*;
 use std::env;
 
 #[command]
+#[num_args(1)]
 #[aliases(def)]
-#[description = "Defines the given words"]
+#[description("Defines the given word")]
+#[usage("define <word>")]
+#[example("define word")]
 async fn define(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 	let word = args.single::<String>()?;
 

@@ -6,8 +6,12 @@ use std::ops::Add;
 use rand::Rng;
 
 #[command]
-#[aliases(rand, rng, rnd)]
-#[description = "Generates a random number between two parameters"]
+#[min_args(1)]
+#[max_args(2)]
+#[aliases(rand, rnd)]
+#[description = "Generates a random number between two bounds"]
+#[usage("rand <bound> <optional: bound>")]
+#[example("rand 10 100")]
 pub async fn random(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 	let mut min = 0f64;
 

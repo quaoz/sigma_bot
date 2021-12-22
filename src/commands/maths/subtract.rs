@@ -3,8 +3,11 @@ use serenity::model::prelude::*;
 use serenity::prelude::*;
 
 #[command]
+#[min_args(1)]
 #[aliases(sub, minus, "-")]
 #[description = "Subtracts several numbers"]
+#[usage("subtract <numbers>")]
+#[example("subtract 54 3 92")]
 pub async fn subtract(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 	let mut product = 1f64;
 

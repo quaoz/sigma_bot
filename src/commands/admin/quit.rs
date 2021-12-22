@@ -5,9 +5,12 @@ use serenity::prelude::*;
 use crate::ShardManagerContainer;
 
 #[command]
-#[owners_only]
-#[aliases(stop)]
-#[description = "Quits the bot"]
+#[num_args(0)]
+#[aliases(kill)]
+#[owners_only(true)]
+#[description("Quits the bot")]
+#[usage("quit")]
+#[example("quit")]
 async fn quit(ctx: &Context, msg: &Message) -> CommandResult {
 	let data = ctx.data.read().await;
 

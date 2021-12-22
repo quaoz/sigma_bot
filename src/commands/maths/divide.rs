@@ -3,8 +3,11 @@ use serenity::model::prelude::*;
 use serenity::prelude::*;
 
 #[command]
+#[min_args(0)]
 #[aliases(div, "/")]
-#[description = "Divides several numbers"]
+#[description("Divides several numbers")]
+#[usage("divide <numbers>")]
+#[example("divide 144 12 3")]
 pub async fn divide(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 	let mut product = 1f64;
 

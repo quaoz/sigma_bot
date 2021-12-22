@@ -144,9 +144,3 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 	Ok(())
 }
-
-pub fn check_msg(result: SerenityResult<Message>) {
-	if let Err(why) = result {
-		error!("Error sending message: {:?}", why);
-	}
-}
