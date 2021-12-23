@@ -23,7 +23,7 @@ async fn join(ctx: &Context, msg: &Message) -> CommandResult {
 	let connect_to = match channel_id {
 		Some(channel) => channel,
 		None => {
-			msg.reply(&ctx.http, "Join a voice channel first.").await?;
+			msg.reply(&ctx.http, "Please join a voice channel first.").await?;
 
 			return Ok(());
 		}
@@ -38,7 +38,7 @@ async fn join(ctx: &Context, msg: &Message) -> CommandResult {
 			let lava_client = data.get::<Lavalink>().unwrap().clone();
 			lava_client.create_session_with_songbird(&connection_info).await?;
 
-			msg.reply(&ctx.http, &format!("Joined {}", connect_to.mention()))
+			msg.reply(&ctx.http, &format!("Joined {}.", connect_to.mention()))
 				.await?;
 		}
 		Err(why) => {

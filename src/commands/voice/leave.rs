@@ -31,9 +31,9 @@ async fn leave(ctx: &Context, msg: &Message) -> CommandResult {
 			lava_client.destroy(guild_id).await?;
 		}
 
-		msg.reply(&ctx.http, "Left the voice channel").await?;
+		msg.reply(&ctx.http, "Left the voice channel.").await?;
 	} else {
-		msg.reply(&ctx.http, "Not in a voice channel").await?;
+		msg.reply(&ctx.http, "Not in a voice channel.").await?;
 	}
 
 	Ok(())

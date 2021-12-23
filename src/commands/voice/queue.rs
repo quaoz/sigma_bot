@@ -1,9 +1,9 @@
 use crate::Lavalink;
 use serenity::{
+	builder::CreateEmbed,
 	client::Context,
 	framework::standard::{macros::command, CommandResult},
 	model::channel::Message,
-	builder::{CreateEmbed, CreateEmbedAuthor}
 };
 
 #[command]
@@ -25,7 +25,12 @@ async fn queue(ctx: &Context, msg: &Message) -> CommandResult {
 		for track in &node.queue {
 			let length = track.track.info.as_ref().unwrap().length;
 			let duration = format!("{}:{}", (length.div_floor(60000)), &(length % 60000).to_string()[..2]);
-			field.push_str(&*format!("{}. {} - {}\n", counter, track.track.info.as_ref().unwrap().title, duration));
+			field.push_str(&*format!(
+				"{}. {} - {}\n",
+				counter,
+				track.track.info.as_ref().unwrap().title,
+				duration
+			));
 			counter += 1;
 		}
 	} else {
@@ -36,14 +41,14 @@ async fn queue(ctx: &Context, msg: &Message) -> CommandResult {
 
 	// Send the message
 	msg.channel_id
-			.send_message(&ctx, |f| {
-				f.content("").embed(|e| {
-					e.0 = embed.0;
-					e
-				})
+		.send_message(&ctx, |f| {
+			f.content("").embed(|e| {
+				e.0 = embed.0;
+				e
 			})
-			.await
-			.unwrap();
+		})
+		.await
+		.unwrap();
 
 	Ok(())
 }

@@ -1,7 +1,7 @@
 use crate::Lavalink;
 use serenity::{
 	client::Context,
-	framework::standard::{macros::command, CommandResult, Args},
+	framework::standard::{macros::command, Args, CommandResult},
 	model::channel::Message,
 };
 
@@ -18,7 +18,7 @@ async fn volume(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 	let volume = args.single::<u16>()?;
 
 	if let Err(_why) = lava_client.volume(msg.guild_id.unwrap(), volume).await {
-		msg.reply(&ctx.http, "Unable to change the volume").await?;
+		msg.reply(&ctx.http, "Unable to change the volume.").await?;
 	} else {
 		msg.reply(&ctx.http, format!("Set the volume to: {}", volume)).await?;
 	}

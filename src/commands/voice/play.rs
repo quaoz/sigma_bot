@@ -17,7 +17,7 @@ async fn play(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 	let guild_id = match ctx.cache.guild_channel(msg.channel_id).await {
 		Some(channel) => channel.guild_id,
 		None => {
-			msg.channel_id.say(&ctx.http, "Error finding channel info").await?;
+			msg.channel_id.say(&ctx.http, "Error finding channel info.").await?;
 
 			return Ok(());
 		}
@@ -55,7 +55,7 @@ async fn play(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 		)
 		.await?;
 	} else {
-		msg.reply(&ctx.http, "Use `~join` first").await?;
+		msg.reply(&ctx.http, "Use `~join` first.").await?;
 	}
 
 	Ok(())

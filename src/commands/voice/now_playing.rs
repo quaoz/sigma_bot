@@ -5,7 +5,7 @@ use serenity::{
 	model::channel::Message,
 };
 
-#[command]
+#[command("now playing")]
 #[num_args(0)]
 #[aliases(playing, np)]
 #[description("Displays the currently playing track")]

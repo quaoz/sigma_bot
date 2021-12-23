@@ -15,7 +15,6 @@ pub async fn subtract(ctx: &Context, msg: &Message, mut args: Args) -> CommandRe
 		product -= args.single::<f64>()?;
 	}
 
-
 	msg.reply(&ctx.http, product).await?;
 	Ok(())
 }

@@ -4,7 +4,7 @@ pub mod admin;
 pub use admin::*;
 #[group]
 #[owners_only(true)]
-#[commands(quit)]
+#[commands(quit, restart, update)]
 struct Admin;
 
 pub mod maths;
