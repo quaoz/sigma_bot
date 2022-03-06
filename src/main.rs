@@ -92,10 +92,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 	let (owners, bot_id) = match http.get_current_application_info().await {
 		Ok(info) => {
 			let mut owners = HashSet::new();
-			owners.insert(info.owner.id);
-
-			(owners, info.id)
-		}
+			if let Some(team) = info.team {
+				owners.insert(team.owner_user_id);
+			} else {
+				owners.insert(info.owner.id);
+			}
+			match http.get_current_user().await {
+				Ok(bot_id) => (owners, bot_id.id),
+				Err(why) => panic!("Could not access the bot id: {:?}", why),
+			}
+		},
 		Err(why) => panic!("Could not access application info: {:?}", why),
 	};
 
@@ -108,7 +114,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 		.group(&INFO_GROUP)
 		.group(&MATHS_GROUP)
 		.group(&WORDS_GROUP)
-		.group(&VOICE_GROUP);
+		.group(&VOICE_GROUP)
+		.group(&GAMES_GROUP);
 
 	let mut client = Client::builder(&token)
 		.framework(framework)

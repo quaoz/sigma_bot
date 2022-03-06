@@ -25,6 +25,12 @@ pub use words::*;
 #[commands(define)]
 struct Words;
 
+pub mod games;
+pub use games::*;
+#[group]
+#[commands(map)]
+struct Games;
+
 pub mod voice;
 pub use voice::*;
 #[group]

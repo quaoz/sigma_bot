@@ -10,7 +10,7 @@ start_bot() {
 }
 
 help() {
-  printf "\nUsage: Bot.sh [-ush]\n\nOptions:\n  -u    Updates the bot\n  -s    Starts the bot\n  -h    Displays this message"
+  printf "\nUsage: Bot.sh [-ush]\n\nOptions:\n  -u    Updates the bot\n  -s    Starts the bot\n  -h    Displays this message\n"
 }
 
 while getopts ush flag

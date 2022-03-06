@@ -58,7 +58,7 @@ update_ll() {
 }
 
 help() {
-  printf "\nUsage: Lavalink [-ikrush]\n\nOptions:\n  -i    State whether Lavalink is running\n  -k    Kill all Lavalink processes\n  -r    Restart Lavalink\n  -u    Update Lavalink\n  -s    Start Lavalink\n  -h    Display this message"
+  printf "\nUsage: Lavalink [-ikrush]\n\nOptions:\n  -i    State whether Lavalink is running\n  -k    Kill all Lavalink processes\n  -r    Restart Lavalink\n  -u    Update Lavalink\n  -s    Start Lavalink\n  -h    Display this message\n"
 }
 
 while getopts ikrush flag
