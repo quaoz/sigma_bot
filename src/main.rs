@@ -107,7 +107,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 	// Create the framework
 	let framework = StandardFramework::new()
-		.configure(|c| c.owners(owners).on_mention(Some(bot_id)).prefix("~"))
+		.configure(|c| c
+			.owners(owners)
+			.on_mention(Some(bot_id))
+			.with_whitespace(true)
+			.case_insensitivity(true)
+			.no_dm_prefix(true)
+			.prefix("~"))
 		.before(before)
 		.after(after)
 		.group(&ADMIN_GROUP)

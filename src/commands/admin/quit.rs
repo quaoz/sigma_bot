@@ -31,7 +31,7 @@ async fn quit(ctx: &Context, msg: &Message) -> CommandResult {
 		response.push_str("shutting down!");
 		manager.lock().await.shutdown_all().await;
 	} else {
-		response.push_str(" problem getting the shard manager.")
+		response.push_str("problem getting the shard manager.")
 	}
 
 	msg.reply(ctx, response).await?;
