@@ -14,7 +14,7 @@ start_ll() {
     echo "Lavalink already running"
   else
     echo "Starting Lavalink"
-    java -jar Lavalink.jar
+    java -jar Lavalink.jar &
   fi
 }
 
@@ -42,7 +42,7 @@ update_ll() {
   latest=$(curl --silent "https://api.github.com/repos/freyacodes/Lavalink/releases/latest" | jq -r .tag_name)
   current=$(java -jar Lavalink.jar --version | grep "Version" | grep -Eo "[0-9]+\.[0-9]+")
 
-  if [[ $latest != "$current" ]]; then
+  if [ -f "LavaLink.jar" ] || [ "$latest" != "$current" ]; then
     kill_ll
 
     echo "Removing old Lavalink"
