@@ -101,19 +101,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 				Ok(bot_id) => (owners, bot_id.id),
 				Err(why) => panic!("Could not access the bot id: {:?}", why),
 			}
-		},
+		}
 		Err(why) => panic!("Could not access application info: {:?}", why),
 	};
 
 	// Create the framework
 	let framework = StandardFramework::new()
-		.configure(|c| c
-			.owners(owners)
-			.on_mention(Some(bot_id))
-			.with_whitespace(true)
-			.case_insensitivity(true)
-			.no_dm_prefix(true)
-			.prefix("~"))
+		.configure(|c| {
+			c.owners(owners)
+				.on_mention(Some(bot_id))
+				.with_whitespace(true)
+				.case_insensitivity(true)
+				.no_dm_prefix(true)
+				.prefix("~")
+		})
 		.before(before)
 		.after(after)
 		.group(&ADMIN_GROUP)
@@ -132,6 +133,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 	let lava_client = LavalinkClient::builder(bot_id)
 		.set_host("127.0.0.1")
+		.set_port(2335)
 		.set_password(env::var("LAVALINK_PASSWORD").unwrap_or_else(|_| "youshallnotpass".to_string()))
 		.build(LavalinkHandler)
 		.await?;

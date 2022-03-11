@@ -14,7 +14,7 @@ start_ll() {
     echo "Lavalink already running"
   else
     echo "Starting Lavalink"
-    java -jar Lavalink.jar &
+    { java -jar Lavalink.jar >/dev/null & } 2>&1
   fi
 }
 

@@ -6,7 +6,7 @@ update_bot() {
 }
 
 start_bot() {
-  cargo run --release --bin sigma_bot &
+  cargo run --release --bin sigma_bot
 }
 
 help() {
