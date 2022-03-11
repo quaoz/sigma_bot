@@ -22,11 +22,7 @@ use serenity::{
 	},
 	prelude::*,
 };
-use std::{
-	collections::{HashMap, HashSet},
-	env,
-	sync::Arc,
-};
+use std::{collections::HashSet, env, sync::Arc};
 
 use lavalink_rs::{gateway::*, model::*, LavalinkClient};
 use songbird::SerenityInit;
@@ -44,11 +40,6 @@ pub struct ShardManagerContainer;
 
 impl TypeMapKey for ShardManagerContainer {
 	type Value = Arc<Mutex<ShardManager>>;
-}
-
-enum ReactionEvent<'a> {
-	Reaction(&'a Reaction),
-	RemoveAll(ChannelId, MessageId),
 }
 
 macro_rules! perform_reaction {
