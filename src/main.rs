@@ -1,30 +1,34 @@
 #![feature(int_roundings)]
 
 pub mod commands;
+pub mod util;
 
 use crate::commands::*;
+pub use crate::util::*;
+
 use serenity::{
 	async_trait,
 	client::{bridge::gateway::ShardManager, Client, Context, EventHandler},
 	framework::{
-		standard::{
-			macros::{hook},
-			Args, CommandResult,
-		},
+		standard::{macros::hook, CommandResult},
 		StandardFramework,
 	},
 	http::Http,
-	model::{channel::Message, event::ResumedEvent, gateway::Ready},
+	model::{
+		channel::{Message, Reaction, ReactionType},
+		event::ResumedEvent,
+		gateway::Ready,
+		id::{ChannelId, MessageId},
+	},
 	prelude::*,
 };
-use std::{collections::HashSet, env, sync::Arc};
-use std::collections::HashMap;
+use std::{
+	collections::{HashMap, HashSet},
+	env,
+	sync::Arc,
+};
 
 use lavalink_rs::{gateway::*, model::*, LavalinkClient};
-use serenity::model::channel::Reaction;
-use serenity::model::channel::ReactionType;
-use serenity::model::id::ChannelId;
-use serenity::model::id::MessageId;
 use songbird::SerenityInit;
 use tokio::sync::Mutex;
 
@@ -45,42 +49,6 @@ impl TypeMapKey for ShardManagerContainer {
 enum ReactionEvent<'a> {
 	Reaction(&'a Reaction),
 	RemoveAll(ChannelId, MessageId),
-}
-
-struct PollsKey;
-
-impl TypeMapKey for PollsKey {
-	type Value = Arc<Mutex<PollsMap>>;
-}
-
-type PollsMap = HashMap<(ChannelId, MessageId), Poll>;
-
-struct Poll {
-	pub question: String,
-	pub answers: Vec<String>,
-	pub answerers: Vec<usize>,
-}
-
-fn render_message(poll: &Poll) -> String {
-	let mut message_text = format!("**Poll:** {}\n", poll.question);
-	let total_answerers = poll.answerers.iter().sum::<usize>();
-
-	for (i, (answer, &num)) in poll.answers.iter().zip(poll.answerers.iter()).enumerate() {
-		let emoji = std::char::from_u32('🇦' as u32 + i as u32).expect("Failed to format emoji");
-		message_text.push(emoji);
-
-		if total_answerers > 0 {
-			let percent = num as f64 / total_answerers as f64 * 100.;
-			message_text.push_str(&format!(" {:.0}%", percent));
-		}
-
-		message_text.push(' ');
-		message_text.push_str(answer);
-		message_text.push_str(&format!(" ({} votes)", num));
-		message_text.push('\n');
-	}
-
-	message_text
 }
 
 macro_rules! perform_reaction {

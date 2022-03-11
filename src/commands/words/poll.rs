@@ -1,4 +1,4 @@
-use crate::{render_message, Poll, PollsKey};
+use crate::util::poll_utils::{render_message, Poll, PollsKey};
 use serenity::framework::standard::{macros::command, Args, CommandResult};
 use serenity::model::prelude::*;
 use serenity::prelude::*;
