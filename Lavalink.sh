@@ -22,9 +22,11 @@ restart_ll() {
   kill_ll
 
   while [[ $(is_ll) == "true" ]]; do
-      sleep 0.5
+      sleep 1
+      kill_ll
   done
 
+  sleep 5
   start_ll
 }
 

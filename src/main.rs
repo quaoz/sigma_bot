@@ -51,10 +51,10 @@ impl EventHandler for Handler {
 #[async_trait]
 impl LavalinkEventHandler for LavalinkHandler {
 	async fn track_start(&self, _client: LavalinkClient, event: TrackStart) {
-		info!("Track started!\nGuild: {}", event.guild_id);
+		info!("Track started! Guild: {}", event.guild_id);
 	}
 	async fn track_finish(&self, _client: LavalinkClient, event: TrackFinish) {
-		info!("Track finished!\nGuild: {}", event.guild_id);
+		info!("Track finished! Guild: {}", event.guild_id);
 	}
 }
 
@@ -133,7 +133,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 	let lava_client = LavalinkClient::builder(bot_id)
 		.set_host("127.0.0.1")
-		.set_port(2335)
+		.set_port(2333)
 		.set_password(env::var("LAVALINK_PASSWORD").unwrap_or_else(|_| "youshallnotpass".to_string()))
 		.build(LavalinkHandler)
 		.await?;
