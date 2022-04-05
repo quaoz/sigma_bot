@@ -84,5 +84,5 @@ fn sanitise(json: &serde_json::Value, value: &str) -> String {
 }
 
 fn get_field(json: &serde_json::Value, value: &str) -> String {
-	json.get(0).unwrap().get(value).unwrap().to_string()
+	json.get(0).unwrap().get(value).unwrap().to_string().replace('\"', "")
 }
