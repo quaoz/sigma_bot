@@ -19,15 +19,23 @@ async fn access(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 		.text()
 		.await?;
 
-	let md5 = Regex::new("md5=(.*?)'").unwrap().captures(resp.as_str()).unwrap();
+	let md5_captures = Regex::new(r"index\.php\?md5=(.*?)'")
+		.unwrap()
+		.find_iter(resp.as_str())
+		.collect::<Vec<_>>();
+
+	// Sets results equal to the smaller value of md5_captures.len() and 5
+	let results = std::cmp::min(md5_captures.len(), 5);
 
 	let mut embed = CreateEmbed::default();
 	embed.title(format!("LibGen results for \"{}\":\n", &title));
 
-	for i in 0..md5.len() {
+	for i in 0..results {
+		let mut md5 = &md5_captures.get(i).unwrap().as_str()[14..&md5_captures.get(i).unwrap().as_str().len() - 1];
+
 		let json: serde_json::Value = reqwest::get(format!(
 			"http://libgen.is/json.php?fields=ipfs_cid,author,title,publisher,year,extension&ids={}",
-			&md5.get(i).unwrap().as_str()
+			&md5
 		))
 		.await?
 		.json()
@@ -36,21 +44,21 @@ async fn access(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 		// Can be swapped for another ipfs gateway such as ipfs.io
 		let dl_url = format!(
 			"https://dweb.link/ipfs/{}?filename={}%20-%20{}-{}%20%28{}%29.{}",
-			sanitise(i, &json, "ipfs_cid"),
-			sanitise(i, &json, "author"),
-			sanitise(i, &json, "title"),
-			sanitise(i, &json, "publisher"),
-			sanitise(i, &json, "year"),
-			sanitise(i, &json, "extension")
+			sanitise(&json, "ipfs_cid"),
+			sanitise(&json, "author"),
+			sanitise(&json, "title"),
+			sanitise(&json, "publisher"),
+			sanitise(&json, "year"),
+			sanitise(&json, "extension")
 		);
 
 		embed.field(
 			format!(
 				"{} ({}) by {} ({})",
-				get_field(i, &json, "title"),
-				get_field(i, &json, "extension"),
-				get_field(i, &json, "author"),
-				get_field(i, &json, "year")
+				get_field(&json, "title"),
+				get_field(&json, "extension"),
+				get_field(&json, "author"),
+				get_field(&json, "year")
 			),
 			dl_url,
 			true,
@@ -71,10 +79,10 @@ async fn access(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 	Ok(())
 }
 
-fn sanitise(index: usize, json: &serde_json::Value, value: &str) -> String {
-	urlencoding::encode(&*get_field(index, json, value).to_lowercase()).to_string()
+fn sanitise(json: &serde_json::Value, value: &str) -> String {
+	urlencoding::encode(&*get_field(json, value).to_lowercase()).to_string()
 }
 
-fn get_field(index: usize, json: &serde_json::Value, value: &str) -> String {
-	json.get(index.to_string()).unwrap().get(value).unwrap().to_string()
+fn get_field(json: &serde_json::Value, value: &str) -> String {
+	json.get(0).unwrap().get(value).unwrap().to_string()
 }
