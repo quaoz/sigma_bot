@@ -44,7 +44,7 @@ async fn access(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 		.find_iter(resp.as_str())
 		.collect::<Vec<_>>();
 
-	let results = std::cmp::min(md5_captures.len(), 6);
+	let results = std::cmp::min(md5_captures.len(), 12);
 
 	// Creates the embed
 	let mut embed = CreateEmbed::default();
@@ -77,7 +77,7 @@ async fn access(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 		embed.field(
 			format!("Result {} ({}):", i + 1, get_field(&json, "extension")),
 			format!(
-				"[{} by {}({})]({})",
+				"[{} by {} ({})]({})",
 				get_field(&json, "title"),
 				get_field(&json, "author"),
 				get_field(&json, "year"),
