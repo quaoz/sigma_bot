@@ -22,13 +22,13 @@ struct Info;
 pub mod words;
 pub use words::*;
 #[group]
-#[commands(define, poll)]
+#[commands(define, poll, access)]
 struct Words;
 
 pub mod games;
 pub use games::*;
 #[group]
-#[commands(map)]
+#[commands(map, squirdle)]
 struct Games;
 
 pub mod voice;
