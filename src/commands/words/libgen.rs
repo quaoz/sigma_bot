@@ -11,35 +11,57 @@ use serenity::prelude::*;
 #[usage("access <title>")]
 #[example("access word")]
 async fn access(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
+	// List of libgen mirrors
+	let mirrors = vec![
+		"https://libgen.rs/search.php?req=",
+		"https://libgen.is/search.php?req=",
+		"https://libgen.st/search.php?req=",
+		"https://libgen.li/index.php?req=",
+		"https://libgen.lc/index.php?req=",
+		"https://libgen.gs/index.php?req=",
+		"https://libgen.io/index.php?req=",
+	];
+
+	let client = reqwest::Client::builder().build()?;
+	let mut base_domain = "https://gen.lib.rus.ec/search.php?req=";
+
+	// Selects a working mirror
+	for mirror in mirrors {
+		if client.get(mirror).send().await?.status().as_u16() == 200 {
+			base_domain = mirror;
+			break;
+		}
+	}
+
 	let title = args.rest();
 
-	// Mirrors: libgen.rs, libgen.is, libgen.st
-	let resp = reqwest::get(format!("http://libgen.is/search.php?req={}", title.replace(' ', "+")))
-		.await?
-		.text()
-		.await?;
+	let url = format!("{}{}", base_domain, urlencoding::encode(title));
+	let resp = client.get(&url).send().await?.text().await?;
 
+	// Collects the md5 hashes
 	let md5_captures = Regex::new(r"index\.php\?md5=(.*?)'")
 		.unwrap()
 		.find_iter(resp.as_str())
 		.collect::<Vec<_>>();
 
-	// Sets results equal to the smaller value of md5_captures.len() and 5
-	let results = std::cmp::min(md5_captures.len(), 5);
+	let results = std::cmp::min(md5_captures.len(), 6);
 
+	// Creates the embed
 	let mut embed = CreateEmbed::default();
-	embed.title(format!("LibGen results for \"{}\":\n", &title));
+	embed.title(format!("LibGen results for \"{}\":\n", &title)).url(&url);
 
 	for i in 0..results {
-		let mut md5 = &md5_captures.get(i).unwrap().as_str()[14..&md5_captures.get(i).unwrap().as_str().len() - 1];
+		let md5 = &md5_captures.get(i).unwrap().as_str()[14..&md5_captures.get(i).unwrap().as_str().len() - 1];
 
-		let json: serde_json::Value = reqwest::get(format!(
-			"http://libgen.is/json.php?fields=ipfs_cid,author,title,publisher,year,extension&ids={}",
-			&md5
-		))
-		.await?
-		.json()
-		.await?;
+		let json: serde_json::Value = client
+			.get(format!(
+				"http://libgen.is/json.php?fields=ipfs_cid,author,title,publisher,year,extension&ids={}",
+				&md5
+			))
+			.send()
+			.await?
+			.json()
+			.await?;
 
 		// Can be swapped for another ipfs gateway such as ipfs.io
 		let dl_url = format!(
@@ -53,14 +75,14 @@ async fn access(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 		);
 
 		embed.field(
+			format!("Result {} ({}):", i + 1, get_field(&json, "extension")),
 			format!(
-				"{} ({}) by {} ({})",
+				"[{} by {}({})]({})",
 				get_field(&json, "title"),
-				get_field(&json, "extension"),
 				get_field(&json, "author"),
-				get_field(&json, "year")
+				get_field(&json, "year"),
+				dl_url
 			),
-			dl_url,
 			true,
 		);
 	}
