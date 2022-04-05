@@ -29,9 +29,9 @@ async fn access(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 			"http://libgen.is/json.php?fields=ipfs_cid,author,title,publisher,year,extension&ids={}",
 			&md5.get(i).unwrap().as_str()
 		))
-			.await?
-			.json()
-			.await?;
+		.await?
+		.json()
+		.await?;
 
 		let dl_url = format!(
 			"https://dweb.link/ipfs/{}?filename={}%20-%20{}-{}%20%28{}%29.{}",
@@ -44,13 +44,15 @@ async fn access(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 		);
 
 		embed.field(
-			format!("{} ({}) by {} ({})",
-					get_field(i, &json, "title"),
-					get_field(i, &json, "extension"),
-					get_field(i, &json, "author"),
-					get_field(i, &json, "year")),
+			format!(
+				"{} ({}) by {} ({})",
+				get_field(i, &json, "title"),
+				get_field(i, &json, "extension"),
+				get_field(i, &json, "author"),
+				get_field(i, &json, "year")
+			),
 			dl_url,
-			true
+			true,
 		);
 	}
 
