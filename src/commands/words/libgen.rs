@@ -33,6 +33,7 @@ async fn access(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 		.json()
 		.await?;
 
+		// Can be swapped for another ipfs gateway such as ipfs.io
 		let dl_url = format!(
 			"https://dweb.link/ipfs/{}?filename={}%20-%20{}-{}%20%28{}%29.{}",
 			sanitise(i, &json, "ipfs_cid"),
