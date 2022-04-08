@@ -22,8 +22,8 @@ async fn define(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 
 	// Gets a json response from the url
 	let json: serde_json::Value = reqwest::get(&url).await?.json().await?;
-
 	let entries = json.as_array().unwrap();
+
 	// Get the first entry
 	let mut defs: Vec<&Vec<serde_json::Value>> =
 		vec![json.get(0).unwrap().get("shortdef").unwrap().as_array().unwrap()];
@@ -57,7 +57,7 @@ async fn define(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 	let mut entry_number = 1;
 	// Iterate through the definitions
 	for def in defs {
-		let mut field = String::from("");
+		let mut field = String::default();
 		let mut index = 1;
 
 		// Iterate through each definitions items

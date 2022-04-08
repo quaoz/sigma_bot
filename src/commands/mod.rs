@@ -22,7 +22,7 @@ struct Info;
 pub mod words;
 pub use words::*;
 #[group]
-#[commands(define, poll, libgen)]
+#[commands(define, synonyms, poll, libgen)]
 struct Words;
 
 pub mod games;

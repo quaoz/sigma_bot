@@ -17,14 +17,12 @@ async fn about(context: &Context, message: &Message) -> CommandResult {
 	let bot_avatar = &current_user.avatar_url().unwrap();
 	let num_shards = context.cache.shard_count().await;
 	let num_channels = context.cache.guild_channel_count().await;
-	let num_users = context.cache.user_count().await;
 
 	let about_fields = vec![
-		("Version", version, true),
-		("Owner", bot_owner, true),
-		("Shards", num_shards.to_string(), true),
-		("Channels", num_channels.to_string(), true),
-		("Users", num_users.to_string(), true),
+		("Version  ", version, true),
+		("Owner    ", bot_owner, true),
+		("Shards   ", num_shards.to_string(), true),
+		("Channels ", num_channels.to_string(), true),
 	];
 
 	message
