@@ -6,11 +6,11 @@ use serenity::prelude::*;
 
 #[command]
 #[min_args(1)]
-#[aliases(libgen, lg)]
+#[aliases(book, lg)]
 #[description("Searches libgen for the given book")]
-#[usage("access <title>")]
-#[example("access word")]
-async fn access(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
+#[usage("libgen <title>")]
+#[example("libgen word")]
+async fn libgen(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 	// List of libgen mirrors
 	let mirrors = vec![
 		"https://libgen.rs/search.php?req=",
@@ -90,7 +90,7 @@ async fn access(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 	// Send the message
 	msg.channel_id
 		.send_message(&ctx, |f| {
-			f.content("").embed(|e| {
+			f.embed(|e| {
 				e.0 = embed.0;
 				e
 			})

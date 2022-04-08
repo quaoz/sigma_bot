@@ -7,7 +7,6 @@ use crate::ShardManagerContainer;
 
 #[command]
 #[num_args(0)]
-#[aliases(kill)]
 #[sub_commands(update_bot, update_lavalink)]
 #[description("Updates the bot and lavalink")]
 #[usage("update")]
