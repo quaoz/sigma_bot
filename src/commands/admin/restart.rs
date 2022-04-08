@@ -28,8 +28,6 @@ async fn restart(ctx: &Context, msg: &Message) -> CommandResult {
 	let data = ctx.data.read().await;
 
 	if let Some(manager) = data.get::<ShardManagerContainer>() {
-		manager.lock().await.shutdown_all().await;
-
 		if Command::new("./Bot.sh")
 			.arg("-s")
 			.output()
@@ -37,11 +35,13 @@ async fn restart(ctx: &Context, msg: &Message) -> CommandResult {
 			.status
 			.success()
 		{
-			response.push_str("restarting myself!")
+			response.push_str("restarting myself!");
+			msg.reply(ctx, response).await?;
+			manager.lock().await.shutdown_all().await;
 		} else {
-			response.push_str("failed to restart myself.")
+			response.push_str("failed to restart myself.");
+			msg.reply(ctx, response).await?;
 		}
-		msg.reply(ctx, response).await?;
 	} else {
 		msg.reply(ctx, "There was a problem getting the shard manager.").await?;
 	}
@@ -58,8 +58,6 @@ async fn restart_bot(ctx: &Context, msg: &Message) -> CommandResult {
 	let data = ctx.data.read().await;
 
 	if let Some(manager) = data.get::<ShardManagerContainer>() {
-		manager.lock().await.shutdown_all().await;
-
 		if Command::new("./Bot.sh")
 			.arg("-s")
 			.output()
@@ -68,6 +66,7 @@ async fn restart_bot(ctx: &Context, msg: &Message) -> CommandResult {
 			.success()
 		{
 			msg.reply(ctx, "Restarting!").await?;
+			manager.lock().await.shutdown_all().await;
 		} else {
 			msg.reply(ctx, "Failed to execute restart command.").await?;
 		}

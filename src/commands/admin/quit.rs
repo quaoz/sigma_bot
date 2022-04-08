@@ -29,12 +29,12 @@ async fn quit(ctx: &Context, msg: &Message) -> CommandResult {
 
 	if let Some(manager) = data.get::<ShardManagerContainer>() {
 		response.push_str("shutting down!");
+		msg.reply(ctx, response).await?;
 		manager.lock().await.shutdown_all().await;
 	} else {
-		response.push_str("problem getting the shard manager.")
+		response.push_str("problem getting the shard manager.");
+		msg.reply(ctx, response).await?;
 	}
-
-	msg.reply(ctx, response).await?;
 
 	Ok(())
 }
@@ -51,7 +51,7 @@ async fn quit_bot(ctx: &Context, msg: &Message) -> CommandResult {
 		msg.reply(ctx, "Shutting down!").await?;
 		manager.lock().await.shutdown_all().await;
 	} else {
-		msg.reply(ctx, "There was a problem getting the shard manager.").await?;
+		msg.reply(ctx, "Problem getting the shard manager.").await?;
 	}
 
 	Ok(())

@@ -22,8 +22,8 @@ restart_ll() {
   kill_ll
 
   while [[ $(is_ll) == "true" ]]; do
-      sleep 1
-      kill_ll
+    sleep 1
+    kill_ll
   done
 
   sleep 5
@@ -42,20 +42,27 @@ is_ll() {
 
 update_ll() {
   latest=$(curl --silent "https://api.github.com/repos/freyacodes/Lavalink/releases/latest" | jq -r .tag_name)
-  current=$(java -jar Lavalink.jar --version | grep "Version" | grep -Eo "[0-9]+\.[0-9]+")
 
-  if [ -f "LavaLink.jar" ] || [ "$latest" != "$current" ]; then
-    kill_ll
-
-    echo "Removing old Lavalink"
-    rm Lavalink.jar
-
-    echo "Downloading new Lavalink"
+  if [ -f "Lavalink.jar" ]; then
+    echo "Downloading Lavalink"
     curl -fsLO https://github.com/freyacodes/Lavalink/releases/download/"$latest"/Lavalink.jar
-
     start_ll
   else
-    echo "Lavalink is already up to date"
+    current=$(java -jar Lavalink.jar --version | grep "Version" | grep -Eo "[0-9]+\.[0-9]+")
+
+    if [ "$latest" != "$current" ]; then
+      kill_ll
+
+      echo "Removing old Lavalink"
+      rm Lavalink.jar
+
+      echo "Downloading new Lavalink"
+      curl -fsLO https://github.com/freyacodes/Lavalink/releases/download/"$latest"/Lavalink.jar
+
+      start_ll
+    else
+      echo "Lavalink is already up to date"
+    fi
   fi
 }
 
@@ -63,15 +70,14 @@ help() {
   printf "\nUsage: Lavalink [-ikrush]\n\nOptions:\n  -i    State whether Lavalink is running\n  -k    Kill all Lavalink processes\n  -r    Restart Lavalink\n  -u    Update Lavalink\n  -s    Start Lavalink\n  -h    Display this message\n"
 }
 
-while getopts ikrush flag
-do
-    case "${flag}" in
-        i) is_ll;;
-        k) kill_ll;;
-        r) restart_ll;;
-        u) update_ll;;
-        s) start_ll;;
-        h) help;;
-        *) help;;
-    esac
+while getopts ikrush flag; do
+  case "${flag}" in
+  i) is_ll ;;
+  k) kill_ll ;;
+  r) restart_ll ;;
+  u) update_ll ;;
+  s) start_ll ;;
+  h) help ;;
+  *) help ;;
+  esac
 done
