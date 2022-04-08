@@ -6,7 +6,7 @@ use std::env;
 
 #[command]
 #[num_args(1)]
-#[aliases(def)]
+#[aliases(syns, thesaurus)]
 #[description("Gives synonyms for the given word")]
 #[usage("synonyms <word>")]
 #[example("synonyms word")]
