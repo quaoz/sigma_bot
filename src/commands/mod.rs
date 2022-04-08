@@ -16,7 +16,7 @@ struct Maths;
 pub mod info;
 pub use info::*;
 #[group]
-#[commands(ping)]
+#[commands(ping, about)]
 struct Info;
 
 pub mod words;
