@@ -1,3 +1,4 @@
+use chrono::Duration;
 use regex::Regex;
 use serenity::framework::standard::{macros::command, CommandResult};
 use serenity::model::prelude::*;
@@ -27,9 +28,32 @@ async fn map(ctx: &Context, msg: &Message) -> CommandResult {
 	let pubs_map = pubs_map_reg.captures(resp.as_str()).unwrap().get(1).unwrap().as_str();
 	let next_pubs_map = next_pubs_map_reg.captures(resp.as_str()).unwrap();
 
+	let now = chrono::Utc::now().time();
+	let start_time = next_pubs_map.get(2).unwrap().as_str().split(':').collect::<Vec<&str>>();
+	let mut time = chrono::NaiveTime::from_hms(start_time[0].parse().unwrap(), start_time[1].parse().unwrap(), 0) - now;
+
+	if time.num_minutes().is_negative() {
+		time = Duration::hours(24) + time;
+	}
+
+	let hours = time.num_hours();
+	let minutes = time.num_minutes() - hours * 60;
+	let mut time_to_string = String::new();
+
+	if hours != 0 {
+		if minutes != 0 {
+			time_to_string.push_str(&*format!("{} hours and {} minutes", hours, minutes))
+		} else {
+			time_to_string.push_str(&*format!("{} hours", hours));
+		}
+	} else if minutes != 0 {
+		time_to_string.push_str(&*format!("{} minutes", minutes))
+	}
+
 	let content = format!(
-		"The current map is {}, the next map is {} from {} to {}",
+		"The current map is {} for {}, the next map is {} from {} to {} (UTC)",
 		pubs_map,
+		time_to_string,
 		next_pubs_map.get(1).unwrap().as_str(),
 		next_pubs_map.get(2).unwrap().as_str(),
 		next_pubs_map.get(3).unwrap().as_str()
