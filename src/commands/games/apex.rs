@@ -28,10 +28,12 @@ async fn map(ctx: &Context, msg: &Message) -> CommandResult {
 	let pubs_map = pubs_map_reg.captures(resp.as_str()).unwrap().get(1).unwrap().as_str();
 	let next_pubs_map = next_pubs_map_reg.captures(resp.as_str()).unwrap();
 
+	// Find how long the current map has left
 	let now = chrono::Utc::now().time();
 	let start_time = next_pubs_map.get(2).unwrap().as_str().split(':').collect::<Vec<&str>>();
 	let mut time = chrono::NaiveTime::from_hms(start_time[0].parse().unwrap(), start_time[1].parse().unwrap(), 0) - now;
 
+	// Fix issues with midnight
 	if time.num_minutes().is_negative() {
 		time = Duration::hours(24) + time;
 	}
@@ -40,6 +42,7 @@ async fn map(ctx: &Context, msg: &Message) -> CommandResult {
 	let minutes = time.num_minutes() - hours * 60;
 	let mut time_to_string = String::new();
 
+	// Display the hours and minutes left
 	if hours != 0 {
 		if minutes != 0 {
 			time_to_string.push_str(&*format!("{} hours and {} minutes", hours, minutes))
@@ -48,6 +51,8 @@ async fn map(ctx: &Context, msg: &Message) -> CommandResult {
 		}
 	} else if minutes != 0 {
 		time_to_string.push_str(&*format!("{} minutes", minutes))
+	} else {
+		time_to_string.push_str("a few seconds");
 	}
 
 	let content = format!(
