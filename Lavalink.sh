@@ -13,7 +13,7 @@ start_ll() {
   if [[ $(is_ll) == "true" ]]; then
     echo "Lavalink already running"
   else
-    echo "Starting Lavalink"
+    echo "Starting Lavalink..."
     { java -jar Lavalink.jar >/dev/null & } 2>&1
   fi
 }
@@ -44,10 +44,6 @@ update_ll() {
   latest=$(curl --silent "https://api.github.com/repos/freyacodes/Lavalink/releases/latest" | jq -r .tag_name)
 
   if [ -f "Lavalink.jar" ]; then
-    echo "Downloading Lavalink"
-    curl -fsLO https://github.com/freyacodes/Lavalink/releases/download/"$latest"/Lavalink.jar
-    start_ll
-  else
     current=$(java -jar Lavalink.jar --version | grep "Version" | grep -Eo "[0-9]+\.[0-9]+")
 
     if [ "$latest" != "$current" ]; then
@@ -63,6 +59,10 @@ update_ll() {
     else
       echo "Lavalink is already up to date"
     fi
+  else
+    echo "No Lavalink jar found, downloading Lavalink..."
+    curl -fsLO https://github.com/freyacodes/Lavalink/releases/download/"$latest"/Lavalink.jar
+    start_ll
   fi
 }
 
