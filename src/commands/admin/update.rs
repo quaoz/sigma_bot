@@ -12,7 +12,7 @@ use crate::ShardManagerContainer;
 #[usage("update")]
 #[example("update")]
 async fn update(ctx: &Context, msg: &Message) -> CommandResult {
-	let mut response = if Command::new("./Lavalink.sh")
+	let mut response = if Command::new("./lavalink.sh")
 		.arg("-u")
 		.output()
 		.expect("Failed to run command")
@@ -27,7 +27,7 @@ async fn update(ctx: &Context, msg: &Message) -> CommandResult {
 	let data = ctx.data.read().await;
 
 	if let Some(manager) = data.get::<ShardManagerContainer>() {
-		if Command::new("./Bot.sh")
+		if Command::new("./bot.sh")
 			.arg("-u")
 			.output()
 			.expect("Failed to run command")
@@ -57,7 +57,7 @@ async fn update_bot(ctx: &Context, msg: &Message) -> CommandResult {
 	let data = ctx.data.read().await;
 
 	if let Some(manager) = data.get::<ShardManagerContainer>() {
-		if Command::new("./Bot.sh")
+		if Command::new("./bot.sh")
 			.arg("-u")
 			.output()
 			.expect("Failed to run command")
@@ -83,7 +83,7 @@ async fn update_bot(ctx: &Context, msg: &Message) -> CommandResult {
 #[usage("update lavalink")]
 #[example("update lavalink")]
 async fn update_lavalink(ctx: &Context, msg: &Message) -> CommandResult {
-	if Command::new("./Lavalink.sh")
+	if Command::new("./lavalink.sh")
 		.arg("-u")
 		.output()
 		.expect("Failed to run command")

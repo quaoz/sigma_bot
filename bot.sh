@@ -6,7 +6,7 @@ update_bot() {
 }
 
 start_bot() {
-  cargo run --quiet --release --bin sigma_bot
+  nohup cargo run --quiet --release --bin sigma_bot & disown
 }
 
 help() {

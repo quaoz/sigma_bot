@@ -21,5 +21,5 @@ cd sigma_bot
 # Downloads and starts the latest Lavalink
 ./LavaLink.sh -u
 # Compiles and runs the bot
-./Bot.sh -s
+./bot.sh -s
 ```

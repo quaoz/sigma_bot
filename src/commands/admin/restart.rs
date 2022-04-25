@@ -13,7 +13,7 @@ use crate::ShardManagerContainer;
 #[usage("restart")]
 #[example("restart")]
 async fn restart(ctx: &Context, msg: &Message) -> CommandResult {
-	let mut response = if Command::new("./Lavalink.sh")
+	let mut response = if Command::new("./lavalink.sh")
 		.arg("-r")
 		.output()
 		.expect("Failed to run command")
@@ -28,7 +28,7 @@ async fn restart(ctx: &Context, msg: &Message) -> CommandResult {
 	let data = ctx.data.read().await;
 
 	if let Some(manager) = data.get::<ShardManagerContainer>() {
-		if Command::new("./Bot.sh")
+		if Command::new("./bot.sh")
 			.arg("-s")
 			.output()
 			.expect("Failed to run command")
@@ -58,7 +58,7 @@ async fn restart_bot(ctx: &Context, msg: &Message) -> CommandResult {
 	let data = ctx.data.read().await;
 
 	if let Some(manager) = data.get::<ShardManagerContainer>() {
-		if Command::new("./Bot.sh")
+		if Command::new("./bot.sh")
 			.arg("-s")
 			.output()
 			.expect("Failed to run command")
@@ -84,7 +84,7 @@ async fn restart_bot(ctx: &Context, msg: &Message) -> CommandResult {
 #[usage("restart lavalink")]
 #[example("restart lavalink")]
 async fn restart_lavalink(ctx: &Context, msg: &Message) -> CommandResult {
-	if Command::new("./Lavalink.sh")
+	if Command::new("./lavalink.sh")
 		.arg("-r")
 		.output()
 		.expect("Failed to run command")

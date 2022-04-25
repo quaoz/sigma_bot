@@ -13,7 +13,7 @@ use crate::ShardManagerContainer;
 #[usage("quit")]
 #[example("quit")]
 async fn quit(ctx: &Context, msg: &Message) -> CommandResult {
-	let mut response = if Command::new("./Lavalink.sh")
+	let mut response = if Command::new("./lavalink.sh")
 		.arg("-k")
 		.output()
 		.expect("Failed to run command")
@@ -64,7 +64,7 @@ async fn quit_bot(ctx: &Context, msg: &Message) -> CommandResult {
 #[usage("quit lavalink")]
 #[example("quit lavalink")]
 async fn quit_lavalink(ctx: &Context, msg: &Message) -> CommandResult {
-	if Command::new("./Lavalink.sh")
+	if Command::new("./lavalink.sh")
 		.arg("-k")
 		.output()
 		.expect("Failed to run command")
