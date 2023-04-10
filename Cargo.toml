@@ -31,7 +31,7 @@ version = "0.10"
 features = ["client", "cache", "framework", "standard_framework", "rustls_backend", "voice"]
 
 [dependencies.songbird]
-version = "0.2"
+version = "0.3"
 default-features = false
 features = ["serenity-rustls", "gateway"]
 
